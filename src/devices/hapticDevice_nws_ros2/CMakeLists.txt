@@ -21,6 +21,7 @@ if(NOT SKIP_hapticDevice_nws_ros2)
   target_sources(yarp_hapticDevice_nws_ros2 PRIVATE $<TARGET_OBJECTS:Ros2Utils>)
 
   target_include_directories(yarp_hapticDevice_nws_ros2 PRIVATE $<TARGET_PROPERTY:Ros2Utils,INTERFACE_INCLUDE_DIRECTORIES>)
+  find_package(orocos_kdl REQUIRED)
   target_link_libraries(yarp_hapticDevice_nws_ros2
     PRIVATE
       YARP::YARP_os
@@ -28,6 +29,7 @@ if(NOT SKIP_hapticDevice_nws_ros2)
       YARP::YARP_dev
       rclcpp::rclcpp
       sensor_msgs::sensor_msgs__rosidl_typesupport_cpp
+      orocos-kdl
       Ros2Utils
   )
   list(APPEND YARP_${YARP_PLUGIN_MASTER}_PRIVATE_DEPS

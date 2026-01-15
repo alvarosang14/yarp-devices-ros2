@@ -9,7 +9,7 @@
 #include <kdl/frames.hpp>
 #include <yarp/os/LogStream.h>
 
-#define HAPTICDEVICE_WRAPPER_DEFAULT_PERIOD     20          // [ms]
+#define HAPTICDEVICE_WRAPPER_DEFAULT_PERIOD     0.02          // [s]
 
 namespace {
     YARP_LOG_COMPONENT(HapticDevice_nws_ros2ParamsCOMPONENT, "yarp.device.HapticDevice_nws_ros2")
@@ -20,7 +20,6 @@ namespace {
 bool HapticDevice_nws_ros2::configureRosHandlers()
 {
     const auto prefix = "/" + m_name; // In nws: "map2D_nws_ros2"
-
     m_stat = m_node->create_publisher<geometry_msgs::msg::Pose>(prefix + "/state/pose", 10);
 
     return true;
@@ -87,6 +86,7 @@ bool HapticDevice_nws_ros2::open(yarp::os::Searchable & config)
 
     // ROS2 initialization
     m_node = std::make_shared<rclcpp::Node>(m_name);
+    m_spinner = new Ros2Spinner(m_node);
 
     return m_spinner->start();
 }
