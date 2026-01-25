@@ -9,10 +9,15 @@
 #include <kdl/frames.hpp>
 #include <yarp/os/LogStream.h>
 
-#define HAPTICDEVICE_WRAPPER_DEFAULT_PERIOD     0.02          // [s]
+YARP_LOG_COMPONENT(HAPTICDEVICE_NWS_ROS2, "yarp.devices.HapticDevice_nws_ros2")
 
-namespace {
-    YARP_LOG_COMPONENT(HapticDevice_nws_ros2ParamsCOMPONENT, "yarp.device.HapticDevice_nws_ros2")
+HapticDevice_nws_ros2::HapticDevice_nws_ros2() : yarp::os::PeriodicThread(DEFAULT_THREAD_PERIOD)
+{
+}
+
+HapticDevice_nws_ros2::~HapticDevice_nws_ros2()
+{
+    iHapticDevice = nullptr;
 }
 
 // -----------------------------------------------------------------------------
@@ -37,26 +42,26 @@ bool HapticDevice_nws_ros2::attach(yarp::dev::PolyDriver * poly)
 {
     if (poly == nullptr)
     {
-        yCError(HapticDevice_nws_ros2ParamsCOMPONENT) << "attach() received nullptr";
+        yCError(HAPTICDEVICE_NWS_ROS2) << "attach() received nullptr";
         return false;
     }
 
     if (!poly->isValid())
     {
-        yCError(HapticDevice_nws_ros2ParamsCOMPONENT) << "attach() received invalid PolyDriver";
+        yCError(HAPTICDEVICE_NWS_ROS2) << "attach() received invalid PolyDriver";
         return false;
     }
 
     // yarp::dev::IHapticDevice *device;
     if (!poly->view(iHapticDevice))
     {
-        yCError(HapticDevice_nws_ros2ParamsCOMPONENT) << "attach() failed to obtain iHapticDevice interface";
+        yCError(HAPTICDEVICE_NWS_ROS2) << "attach() failed to obtain iHapticDevice interface";
         return false;
     }
 
     if (!configureRosHandlers())
     {
-        yCError(HapticDevice_nws_ros2ParamsCOMPONENT) << "Failed to configure ROS handlers";
+        yCError(HAPTICDEVICE_NWS_ROS2) << "Failed to configure ROS handlers";
         destroyRosHandlers(); // cleanup
         return false;
     }
@@ -64,10 +69,18 @@ bool HapticDevice_nws_ros2::attach(yarp::dev::PolyDriver * poly)
     return yarp::os::PeriodicThread::start();
 }
 
+bool HapticDevice_nws_ros2::threadInit()
+{
+    return true;
+}
+
 // -----------------------------------------------------------------------------
 bool HapticDevice_nws_ros2::detach()
 {
-    yarp::os::PeriodicThread::stop();
+    if (PeriodicThread::isRunning())
+    {
+        PeriodicThread::stop();
+    }
     destroyRosHandlers();
     iHapticDevice = nullptr;
     return true;
@@ -77,18 +90,26 @@ bool HapticDevice_nws_ros2::detach()
 
 bool HapticDevice_nws_ros2::open(yarp::os::Searchable & config)
 {
-    yarp::os::PeriodicThread::setPeriod(HAPTICDEVICE_WRAPPER_DEFAULT_PERIOD);
-
     if (!rclcpp::ok())
     {
         rclcpp::init(0, nullptr);
     }
 
+    parseParams(config);
+
     // ROS2 initialization
+    rclcpp::NodeOptions node_options;
+    node_options.allow_undeclared_parameters(true);
+    node_options.automatically_declare_parameters_from_overrides(true);
+
     m_node = std::make_shared<rclcpp::Node>(m_name);
     m_spinner = new Ros2Spinner(m_node);
 
     return m_spinner->start();
+}
+
+void HapticDevice_nws_ros2::threadRelease()
+{
 }
 
 // -----------------------------------------------------------------------------
@@ -103,6 +124,8 @@ bool HapticDevice_nws_ros2::close()
         delete m_spinner;
         m_spinner = nullptr;
     }
+
+    detach();
 
     return ret;
 }

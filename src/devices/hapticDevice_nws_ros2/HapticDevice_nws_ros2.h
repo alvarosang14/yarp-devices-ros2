@@ -17,6 +17,8 @@
 
 #include "HapticDevice_nws_ros2_ParamsParser.h"
 
+#define DEFAULT_THREAD_PERIOD 0.02 //s
+
 /**
  * @ingroup YarpPlugins
  * @defgroup HapricDeviceRos2
@@ -25,12 +27,13 @@
  */
 
 class HapticDevice_nws_ros2 : public yarp::dev::DeviceDriver,
-                                   public yarp::dev::WrapperSingle,
-                                   public yarp::os::PeriodicThread
+                                    public yarp::dev::WrapperSingle,
+                                    public yarp::os::PeriodicThread,
+                                    public HapticDevice_nws_ros2_ParamsParser
 {
 public:
-    HapticDevice_nws_ros2() : yarp::os::PeriodicThread(1.0)
-    {}
+    HapticDevice_nws_ros2();
+    ~HapticDevice_nws_ros2();
 
     // Implementation in DeviceDriverImpl.cpp
     bool open(yarp::os::Searchable & config) override;
@@ -41,6 +44,8 @@ public:
     bool detach() override;
 
     // Implementation in PeriodicThread.cpp
+    bool threadInit() override;
+    void threadRelease() override;
     void run() override;
 
 private:
