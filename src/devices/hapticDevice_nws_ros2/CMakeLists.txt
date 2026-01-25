@@ -11,12 +11,14 @@ yarp_prepare_plugin(hapticDevice_nws_ros2
 
 if(NOT SKIP_hapticDevice_nws_ros2)
   yarp_add_plugin(yarp_hapticDevice_nws_ros2)
-  #generateDeviceParamsParser(Ha_nws_ros2 battery_nws_ros2)
+  generateDeviceParamsParser(HapticDevice_nws_ros2 hapticDevice_nws_ros2)
 
   target_sources(yarp_hapticDevice_nws_ros2
     PRIVATE
       HapticDevice_nws_ros2.cpp
       HapticDevice_nws_ros2.h
+      HapticDevice_nws_ros2_ParamsParser.h
+      HapticDevice_nws_ros2_ParamsParser.cpp
   )
   target_sources(yarp_hapticDevice_nws_ros2 PRIVATE $<TARGET_OBJECTS:Ros2Utils>)
 
@@ -52,7 +54,7 @@ if(NOT SKIP_hapticDevice_nws_ros2)
 
   set(YARP_${YARP_PLUGIN_MASTER}_PRIVATE_DEPS ${YARP_${YARP_PLUGIN_MASTER}_PRIVATE_DEPS} PARENT_SCOPE)
 
-  set_property(TARGET yarp_battery_nws_ros2 PROPERTY FOLDER "Plugins/Device/NWS")
+  set_property(TARGET yarp_hapticDevice_nws_ros2 PROPERTY FOLDER "Plugins/Device/NWS")
 
   if(YARP_COMPILE_TESTS)
     add_subdirectory(tests)

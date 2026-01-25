@@ -15,6 +15,8 @@
 #include <rcl_interfaces/msg/set_parameters_result.hpp>
 #include <geometry_msgs/msg/pose.hpp>
 
+#include "HapticDevice_nws_ros2_ParamsParser.h"
+
 /**
  * @ingroup YarpPlugins
  * @defgroup HapricDeviceRos2
