@@ -14,6 +14,9 @@
 #include <rclcpp/rclcpp.hpp>
 #include <rcl_interfaces/msg/set_parameters_result.hpp>
 #include <geometry_msgs/msg/pose.hpp>
+#include <geometry_msgs/msg/wrench.hpp>
+#include <geometry_msgs/msg/transform.hpp>
+#include <std_msgs/msg/int32_multi_array.hpp>
 
 #include "HapticDevice_nws_ros2_ParamsParser.h"
 
@@ -55,7 +58,12 @@ private:
     std::string m_name = {"haptic_device_ros2"};
 
     rclcpp::Node::SharedPtr m_node;
+
     rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr m_stat;
+    rclcpp::Publisher<std_msgs::msg::Int32MultiArray>::SharedPtr m_buttons;
+    rclcpp::Publisher<geometry_msgs::msg::Wrench>::SharedPtr m_force;
+    rclcpp::Publisher<geometry_msgs::msg::Transform>::SharedPtr m_transform;
+
     Ros2Spinner* m_spinner;
 
     yarp::dev::IHapticDevice *iHapticDevice;

@@ -24,9 +24,20 @@ HapticDevice_nws_ros2::~HapticDevice_nws_ros2()
 
 bool HapticDevice_nws_ros2::configureRosHandlers()
 {
-    const auto prefix = "/" + m_name; // In nws: "map2D_nws_ros2"
-    m_stat = m_node->create_publisher<geometry_msgs::msg::Pose>(prefix + "/state/pose", 10);
-
+    const auto prefix = "/" + m_name;
+    
+    m_stat = m_node->create_publisher<geometry_msgs::msg::Pose>(
+        prefix + "/state/pose", 10);
+    
+    m_buttons = m_node->create_publisher<std_msgs::msg::Int32MultiArray>(
+        prefix + "/state/buttons", 10);
+    
+    m_force = m_node->create_publisher<geometry_msgs::msg::Wrench>(
+        prefix + "/state/force_feedback", 10);
+    
+    m_transform = m_node->create_publisher<geometry_msgs::msg::Transform>(
+        prefix + "/state/transform", 10);
+    
     return true;
 }
 
@@ -35,6 +46,9 @@ bool HapticDevice_nws_ros2::configureRosHandlers()
 void HapticDevice_nws_ros2::destroyRosHandlers()
 {
     m_stat.reset();
+    m_buttons.reset();
+    m_force.reset();
+    m_transform.reset();
 }
 
 // -----------------------------------------------------------------------------
@@ -135,6 +149,7 @@ void HapticDevice_nws_ros2::run()
 {
     if (iHapticDevice != nullptr)
     {
+        // Pose
         yarp::sig::Vector pos, rpy;
         iHapticDevice->getPosition(pos);
         iHapticDevice->getOrientation(rpy);
@@ -148,5 +163,33 @@ void HapticDevice_nws_ros2::run()
         ori.GetQuaternion(msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w);
 
         m_stat->publish(msg);
+
+        // Buttons
+        std_msgs::msg::Int32MultiArray btn_msg;
+        yarp::sig::Vector buttons;
+        iHapticDevice->getButtons(buttons);
+        for (size_t i = 0; i < buttons.size(); ++i) {
+            btn_msg.data.push_back(static_cast<int>(buttons[i]));
+        }
+        m_buttons->publish(btn_msg);
+        
+        // Force Feedback
+        yarp::sig::Vector force;
+        iHapticDevice->getMaxFeedback(force);
+        geometry_msgs::msg::Wrench force_msg;
+        force_msg.force.x = force[0];
+        force_msg.force.y = force[1];
+        force_msg.force.z = force[2];
+        m_force->publish(force_msg);
+        
+        // Transform
+        yarp::sig::Matrix trans;
+        iHapticDevice->getTransformation(trans);
+        geometry_msgs::msg::Transform trans_msg;
+        trans_msg.translation.x = trans(0, 3);
+        trans_msg.translation.y = trans(1, 3);
+        trans_msg.translation.z = trans(2, 3);
+        // ... extraer rotación de la matriz
+        m_transform->publish(trans_msg);
     }
 }
