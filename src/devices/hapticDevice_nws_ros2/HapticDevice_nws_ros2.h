@@ -55,8 +55,6 @@ private:
     bool configureRosHandlers();
     void destroyRosHandlers();
 
-    std::string m_name = {"haptic_device_ros2"};
-
     rclcpp::Node::SharedPtr m_node;
 
     rclcpp::Publisher<geometry_msgs::msg::Pose>::SharedPtr m_stat;

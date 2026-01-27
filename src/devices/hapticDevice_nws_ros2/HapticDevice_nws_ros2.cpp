@@ -24,20 +24,20 @@ HapticDevice_nws_ros2::~HapticDevice_nws_ros2()
 
 bool HapticDevice_nws_ros2::configureRosHandlers()
 {
-    const auto prefix = "/" + m_name;
-    
+    const auto prefix = "/" + m_node_name;
+
     m_stat = m_node->create_publisher<geometry_msgs::msg::Pose>(
         prefix + "/state/pose", 10);
-    
+
     m_buttons = m_node->create_publisher<std_msgs::msg::Int32MultiArray>(
         prefix + "/state/buttons", 10);
-    
+
     m_force = m_node->create_publisher<geometry_msgs::msg::Wrench>(
         prefix + "/state/force_feedback", 10);
-    
+
     m_transform = m_node->create_publisher<geometry_msgs::msg::Transform>(
         prefix + "/state/transform", 10);
-    
+
     return true;
 }
 
@@ -80,6 +80,7 @@ bool HapticDevice_nws_ros2::attach(yarp::dev::PolyDriver * poly)
         return false;
     }
 
+    yarp::os::PeriodicThread::setPeriod(m_period);
     return yarp::os::PeriodicThread::start();
 }
 
@@ -116,7 +117,7 @@ bool HapticDevice_nws_ros2::open(yarp::os::Searchable & config)
     node_options.allow_undeclared_parameters(true);
     node_options.automatically_declare_parameters_from_overrides(true);
 
-    m_node = std::make_shared<rclcpp::Node>(m_name);
+    m_node = std::make_shared<rclcpp::Node>(m_node_name);
     m_spinner = new Ros2Spinner(m_node);
 
     return m_spinner->start();
@@ -172,7 +173,7 @@ void HapticDevice_nws_ros2::run()
             btn_msg.data.push_back(static_cast<int>(buttons[i]));
         }
         m_buttons->publish(btn_msg);
-        
+
         // Force Feedback
         yarp::sig::Vector force;
         iHapticDevice->getMaxFeedback(force);
@@ -181,7 +182,7 @@ void HapticDevice_nws_ros2::run()
         force_msg.force.y = force[1];
         force_msg.force.z = force[2];
         m_force->publish(force_msg);
-        
+
         // Transform
         yarp::sig::Matrix trans;
         iHapticDevice->getTransformation(trans);
