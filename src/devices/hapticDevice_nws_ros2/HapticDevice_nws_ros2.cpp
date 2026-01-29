@@ -11,7 +11,7 @@
 
 YARP_LOG_COMPONENT(HAPTICDEVICE_NWS_ROS2, "yarp.devices.HapticDevice_nws_ros2")
 
-HapticDevice_nws_ros2::HapticDevice_nws_ros2() : yarp::os::PeriodicThread(DEFAULT_THREAD_PERIOD)
+HapticDevice_nws_ros2::HapticDevice_nws_ros2() : yarp::os::PeriodicThread(m_period)
 {
 }
 
