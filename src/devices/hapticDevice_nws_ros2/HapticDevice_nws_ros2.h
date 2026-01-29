@@ -20,8 +20,6 @@
 
 #include "HapticDevice_nws_ros2_ParamsParser.h"
 
-#define DEFAULT_THREAD_PERIOD 0.02 //s
-
 /**
  * @ingroup YarpPlugins
  * @defgroup HapricDeviceRos2

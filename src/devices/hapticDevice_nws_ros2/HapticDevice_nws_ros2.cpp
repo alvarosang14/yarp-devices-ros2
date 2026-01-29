@@ -24,7 +24,7 @@ HapticDevice_nws_ros2::~HapticDevice_nws_ros2()
 
 bool HapticDevice_nws_ros2::configureRosHandlers()
 {
-    const auto prefix = "/" + m_node_name;
+    const auto prefix = "/" + m_topic_name;
 
     m_stat = m_node->create_publisher<geometry_msgs::msg::Pose>(
         prefix + "/state/pose", 10);

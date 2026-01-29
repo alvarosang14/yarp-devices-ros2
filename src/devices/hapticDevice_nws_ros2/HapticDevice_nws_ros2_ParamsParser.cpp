@@ -8,7 +8,7 @@
 // This is an automatically generated file. Please do not edit it.
 // It will be re-generated if the cmake flag ALLOW_DEVICE_PARAM_PARSER_GERNERATION is ON.
 
-// Generated on: Sun Jan 25 17:24:14 2026
+// Generated on: Thu Jan 29 15:58:17 2026
 
 
 #include "HapticDevice_nws_ros2_ParamsParser.h"
@@ -102,9 +102,7 @@ bool      HapticDevice_nws_ros2_ParamsParser::parseParams(const yarp::os::Search
         }
         else
         {
-            yCError(HapticDevice_nws_ros2ParamsCOMPONENT) << "Mandatory parameter 'node_name' not found!";
-            yCError(HapticDevice_nws_ros2ParamsCOMPONENT) << "Description of the parameter: name of the ros2 node";
-            return false;
+            yCInfo(HapticDevice_nws_ros2ParamsCOMPONENT) << "Parameter 'node_name' using DEFAULT value:" << m_node_name;
         }
         prop_check.unput("node_name");
     }
@@ -118,9 +116,7 @@ bool      HapticDevice_nws_ros2_ParamsParser::parseParams(const yarp::os::Search
         }
         else
         {
-            yCError(HapticDevice_nws_ros2ParamsCOMPONENT) << "Mandatory parameter 'topic_name' not found!";
-            yCError(HapticDevice_nws_ros2ParamsCOMPONENT) << "Description of the parameter: name of the topic where the device must publish the data";
-            return false;
+            yCInfo(HapticDevice_nws_ros2ParamsCOMPONENT) << "Parameter 'topic_name' using DEFAULT value:" << m_topic_name;
         }
         prop_check.unput("topic_name");
     }
@@ -161,13 +157,13 @@ std::string      HapticDevice_nws_ros2_ParamsParser::getDocumentationOfDevicePar
     doc = doc + std::string("This is the help for device: HapticDevice_nws_ros2\n");
     doc = doc + std::string("\n");
     doc = doc + std::string("This is the list of the parameters accepted by the device:\n");
-    doc = doc + std::string("'period': refresh period of the broadcasted values in s\n");
-    doc = doc + std::string("'node_name': name of the ros2 node\n");
-    doc = doc + std::string("'topic_name': name of the topic where the device must publish the data\n");
+    doc = doc + std::string("'period': refresh period\n");
+    doc = doc + std::string("'node_name': name of node\n");
+    doc = doc + std::string("'topic_name': topic name where publish (not '/')\n");
     doc = doc + std::string("\n");
     doc = doc + std::string("Here are some examples of invocation command with yarpdev, with all params:\n");
-    doc = doc + " yarpdev --device hapticDevice_nws_ros2 --period 0.02 --node_name <mandatory_value> --topic_name <mandatory_value>\n";
+    doc = doc + " yarpdev --device hapticDevice_nws_ros2 --period 0.02 --node_name haptic_device_ros2 --topic_name haptic_device_ros2\n";
     doc = doc + std::string("Using only mandatory params:\n");
-    doc = doc + " yarpdev --device hapticDevice_nws_ros2 --node_name <mandatory_value> --topic_name <mandatory_value>\n";
+    doc = doc + " yarpdev --device hapticDevice_nws_ros2\n";
     doc = doc + std::string("=============================================\n\n");    return doc;
 }
