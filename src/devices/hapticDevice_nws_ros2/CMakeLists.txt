@@ -33,6 +33,7 @@ if(NOT SKIP_hapticDevice_nws_ros2)
       sensor_msgs::sensor_msgs__rosidl_typesupport_cpp
       orocos-kdl
       Ros2Utils
+      yarp_control_msgs::yarp_control_msgs__rosidl_typesupport_cpp
   )
   list(APPEND YARP_${YARP_PLUGIN_MASTER}_PRIVATE_DEPS
     YARP_os

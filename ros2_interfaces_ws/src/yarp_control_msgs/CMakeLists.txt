@@ -48,6 +48,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/GetVelocity.srv"
   "srv/GetAvailableControlModes.srv"
   "srv/GetJointsNames.srv"
+  "srv/SetFeedbackMode.srv"
   "msg/Position.msg"
   "msg/Velocity.msg"
   "msg/PositionDirect.msg"
