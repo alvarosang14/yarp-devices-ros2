@@ -109,8 +109,8 @@ void HapticDevice_nws_ros2::setForceModeCallback(
     if (!iHapticDevice)
     {
         yCError(HAPTICDEVICE_NWS_ROS2) << "IHapticDevice interface not available";
-        response->response = "ERROR";
-        response->opt_descr = "IHapticDevice interface not available";
+        response->success = false;
+        response->message = "IHapticDevice interface not available";
         return;
     }
 
@@ -118,20 +118,20 @@ void HapticDevice_nws_ros2::setForceModeCallback(
                   iHapticDevice->setCartesianForceMode() : 
                   iHapticDevice->setJointTorqueMode();
     
-    response->opt_descr = request->cartesian_mode ? 
+    response->message = request->cartesian_mode ? 
                           "Cartesian Force mode enabled" : 
                           "Joint Torque mode enabled";
     
     if (result)
     {
         yCInfo(HAPTICDEVICE_NWS_ROS2) << response->opt_descr;
-        response->response = "OK";
+        response->success = true;
     }
     else
     {
         yCError(HAPTICDEVICE_NWS_ROS2) << "Failed to set haptic mode";
-        response->response = "ERROR";
-        response->opt_descr = "Failed to set haptic mode";
+        response->success = false;
+        response->message = "Failed to set haptic mode";
     }
 }
 // -----------------------------------------------------------------------------
