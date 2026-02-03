@@ -13,7 +13,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <rcl_interfaces/msg/set_parameters_result.hpp>
-#include <yarp_control_msgs/srv/set_feedback_mode.hpp>
+#include <std_srvs/srv/set_bool.hpp>
 
 #include <geometry_msgs/msg/pose.hpp>
 #include <geometry_msgs/msg/wrench.hpp>
@@ -60,8 +60,8 @@ private:
     void _feedbackCallback(const sensor_msgs::msg::JointState::SharedPtr msg);
 
     void setForceModeCallback(
-        const std::shared_ptr<yarp_control_msgs::srv::SetFeedbackMode::Request> request,
-        std::shared_ptr<yarp_control_msgs::srv::SetFeedbackMode::Response> response);
+        const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
+        std::shared_ptr<std_srvs::srv::SetBool::Response> response);
 
     void destroyRosHandlers();
 
@@ -74,7 +74,7 @@ private:
 
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr m_feedback;
 
-    rclcpp::Service<yarp_control_msgs::srv::SetFeedbackMode>::SharedPtr m_setForceModeService;
+    rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr m_setForceModeService;
 
     Ros2Spinner* m_spinner;
 

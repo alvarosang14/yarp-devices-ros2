@@ -55,7 +55,7 @@ bool HapticDevice_nws_ros2::servicesConfigureRosHandlers()
 {
     const auto prefix = "/" + m_topic_name;
 
-    m_setForceModeService = m_node->create_service<yarp_control_msgs::srv::SetFeedbackMode>(
+    m_setForceModeService = m_node->create_service<std_srvs::srv::SetBool>(
         prefix + "/set_force_mode",
         std::bind(&HapticDevice_nws_ros2::setForceModeCallback,
                   this,
@@ -95,16 +95,16 @@ void HapticDevice_nws_ros2::_feedbackCallback(const sensor_msgs::msg::JointState
             force[2] = msg->effort[2];;
         }
         iHapticDevice->setFeedback(force);
-    } 
-    else 
+    }
+    else
     {
         yCError(HAPTICDEVICE_NWS_ROS2) << "IHapticDevice interface not available in feedback callback";
     }
 }
 
 void HapticDevice_nws_ros2::setForceModeCallback(
-    const std::shared_ptr<yarp_control_msgs::srv::SetFeedbackMode::Request> request,
-    std::shared_ptr<yarp_control_msgs::srv::SetFeedbackMode::Response> response)
+    const std::shared_ptr<std_srvs::srv::SetBool::Request> request,
+    std::shared_ptr<std_srvs::srv::SetBool::Response> response)
 {
     if (!iHapticDevice)
     {
@@ -114,17 +114,17 @@ void HapticDevice_nws_ros2::setForceModeCallback(
         return;
     }
 
-    bool result = request->cartesian_mode ? 
-                  iHapticDevice->setCartesianForceMode() : 
+    bool result = request->data ?
+                  iHapticDevice->setCartesianForceMode() :
                   iHapticDevice->setJointTorqueMode();
-    
-    response->message = request->cartesian_mode ? 
-                          "Cartesian Force mode enabled" : 
+
+    response->message = request->data ?
+                          "Cartesian Force mode enabled" :
                           "Joint Torque mode enabled";
-    
+
     if (result)
     {
-        yCInfo(HAPTICDEVICE_NWS_ROS2) << response->opt_descr;
+        yCInfo(HAPTICDEVICE_NWS_ROS2) << response->message;
         response->success = true;
     }
     else
